@@ -164,100 +164,132 @@ console.log('masuk');
  
   try {
         //dataFolderKabkot.map
-for( let a=0;a<dataFolderKabkot.length; a++){
-    const output=[['kode_kabkot',	'jenis',	'nama_file',	'path','level1', 'level2',	'link',	'date_created',	'size',	'owner', 'nama_kabkot', 'kode_nama_kabkot']]
-    let numFolder=0;
+    for( let a=0;a<dataFolderKabkot.length; a++){
+        const output=[['kode_kabkot',	'jenis',	'nama_file',	'path','level1', 'level2',	'link',	'date_created',	'size',	'owner', 'nama_kabkot', 'kode_nama_kabkot']]
+        let numFolder=0;
 
-    await sheets.spreadsheets.values.update({
-        spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
-        range: "recap!E"+(a+2)+":G"+(a+2),
-        valueInputOption: 'USER_ENTERED',
-        resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), '', 'Gagal' ]]}
-        });
+        await sheets.spreadsheets.values.update({
+            spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+            range: "recap!E"+(a+2)+":G"+(a+2),
+            valueInputOption: 'USER_ENTERED',
+            resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), '', 'Gagal' ]]}
+            });
 
-    console.log('crawl data '+dataFolderKabkot[a][0]+' - '+dataFolderKabkot[a][2]+' . . . ')
-    const nmKabKota=dataFolderKabkot[a][2];
-    const kdKab=dataFolderKabkot[a][0];
-    
-    const folderRoot = await getFolders(dataFolderKabkot[a][1], drive);
-    //console.log(folderRoot);
-    
-    for (let item of folderRoot.folders) {
-        console.log(item.name);
-        await getFolders(item.id,drive).then( async (response)=>{
-            for(let item2 of response.folders){
-                 await getFolders(item2.id,drive).then(async(response)=>{
-                    console.log(item2.name);
-                    output.push(  getFolderInfo(item2, kdKab, item.name, item.name, item2.name, nmKabKota ));
-                    for(let files2 of response.files){
-                        output.push( getFileInfo(files2, kdKab, item.name+' >> '+item2.name, item.name, item2.name, nmKabKota ));
-                    }
-                    for(let item3 of response.folders){
-                        await getFolders(item3.id,drive).then(async (response)=>{
-                            //console.log(item3.name);
-                            output.push( getFolderInfo(item3, kdKab, item.name+' >> '+item2.name, item.name, item2.name, nmKabKota ));
-                            for(let files3 of response.files){
-                                output.push( getFileInfo(files3, kdKab, item.name+' >> '+item2.name+' >> '+item3.name, item.name, item2.name, nmKabKota ));
-                            }
-                            for(let item4 of response.folders){
-                                await getFolders(item4.id,drive).then(async (response)=>{
-                                    //console.log(item4.name);
-                                    output.push( getFolderInfo(item4, kdKab,  item.name+' >> '+item2.name+' >> '+item3.name, item.name, item2.name, nmKabKota ));
-                                    for(let files4 of response.files){
-                                        output.push( getFileInfo(files4, kdKab,  item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name, item.name, item2.name, nmKabKota ));
-                                    }
-                                    for(let item5 of response.folders){
-                                        await getFolders(item5.id,drive).then(async (response)=>{
-                                            //console.log(item5.name);
-                                            output.push( getFolderInfo(item5, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name, item.name, item2.name, nmKabKota ));
-                                            for(let files5 of response.files){
-                                                output.push( getFileInfo(files5, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name, item.name, item2.name, nmKabKota ));
-                                            }
-                                            for(let item6 of response.folders){
-                                                await getFolders(item6.id,drive).then(async (response)=>{
-                                                    //console.log(item6.name);
-                                                    output.push( getFolderInfo(item6, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name, item.name, item2.name, nmKabKota ));
-                                                    for(let files6 of response.files){
-                                                        output.push( getFileInfo(files6, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name, item.name, item2.name, nmKabKota ));
-                                                    }
-                                                    for(let item7 of response.folders){
-                                                        await getFolders(item7.id,drive).then(async (response)=>{
-                                                            //console.log(item7.name);
-                                                            output.push( getFolderInfo(item7, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name, item.name, item2.name, nmKabKota ));
-                                                            for(let files7 of response.files){
-                                                                output.push( getFileInfo(files7, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name+' >> '+item7.name, item.name, item2.name, nmKabKota ));
-                                                            }
-                                                        })
-                                                   }
-                                               })
-                                           }
-                                       })
-                                   }
-                               })
-                           }
-                       })
-                   }
-                })
-            }
-            
-        })   
+        console.log('crawl data '+dataFolderKabkot[a][0]+' - '+dataFolderKabkot[a][2]+' . . . ')
+        const nmKabKota=dataFolderKabkot[a][2];
+        const kdKab=dataFolderKabkot[a][0];
+        
+        const folderRoot = await getFolders(dataFolderKabkot[a][1], drive);
+        //console.log(folderRoot);
+        
+        for (let item of folderRoot.folders) {
+            console.log(item.name);
+            await getFolders(item.id,drive).then( async (response)=>{
+                for(let item2 of response.folders){
+                    await getFolders(item2.id,drive).then(async(response)=>{
+                        console.log(item2.name);
+                        output.push(  getFolderInfo(item2, kdKab, item.name, item.name, item2.name, nmKabKota ));
+                        for(let files2 of response.files){
+                            output.push( getFileInfo(files2, kdKab, item.name+' >> '+item2.name, item.name, item2.name, nmKabKota ));
+                        }
+                        for(let item3 of response.folders){
+                            await getFolders(item3.id,drive).then(async (response)=>{
+                                //console.log(item3.name);
+                                output.push( getFolderInfo(item3, kdKab, item.name+' >> '+item2.name, item.name, item2.name, nmKabKota ));
+                                for(let files3 of response.files){
+                                    output.push( getFileInfo(files3, kdKab, item.name+' >> '+item2.name+' >> '+item3.name, item.name, item2.name, nmKabKota ));
+                                }
+                                for(let item4 of response.folders){
+                                    await getFolders(item4.id,drive).then(async (response)=>{
+                                        //console.log(item4.name);
+                                        output.push( getFolderInfo(item4, kdKab,  item.name+' >> '+item2.name+' >> '+item3.name, item.name, item2.name, nmKabKota ));
+                                        for(let files4 of response.files){
+                                            output.push( getFileInfo(files4, kdKab,  item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name, item.name, item2.name, nmKabKota ));
+                                        }
+                                        for(let item5 of response.folders){
+                                            await getFolders(item5.id,drive).then(async (response)=>{
+                                                //console.log(item5.name);
+                                                output.push( getFolderInfo(item5, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name, item.name, item2.name, nmKabKota ));
+                                                for(let files5 of response.files){
+                                                    output.push( getFileInfo(files5, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name, item.name, item2.name, nmKabKota ));
+                                                }
+                                                for(let item6 of response.folders){
+                                                    await getFolders(item6.id,drive).then(async (response)=>{
+                                                        //console.log(item6.name);
+                                                        output.push( getFolderInfo(item6, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name, item.name, item2.name, nmKabKota ));
+                                                        for(let files6 of response.files){
+                                                            output.push( getFileInfo(files6, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name, item.name, item2.name, nmKabKota ));
+                                                        }
+                                                        for(let item7 of response.folders){
+                                                            await getFolders(item7.id,drive).then(async (response)=>{
+                                                                //console.log(item7.name);
+                                                                output.push( getFolderInfo(item7, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name, item.name, item2.name, nmKabKota ));
+                                                                for(let files7 of response.files){
+                                                                    output.push( getFileInfo(files7, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name+' >> '+item7.name, item.name, item2.name, nmKabKota ));
+                                                                }
+                                                            })
+                                                      }
+                                                  })
+                                              }
+                                          })
+                                      }
+                                  })
+                              }
+                          })
+                      }
+                    })
+                }
+                
+            })   
+        }
+        //console.log(output.length);
+        
+      
+        const result = await sheets.spreadsheets.values.update({
+            spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+            range: dataFolderKabkot[a][0]+"!A1:L"+(output.length+1),
+            valueInputOption: 'USER_ENTERED',
+            resource:{'values':output}
+            });
+        await sheets.spreadsheets.values.update({
+            spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+            range: "recap!F"+(a+2)+":G"+(a+2),
+            valueInputOption: 'USER_ENTERED',
+            resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), 'Sukses']]}
+            });
     }
-    //console.log(output.length);
-    
-  
-    const result = await sheets.spreadsheets.values.update({
-        spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
-        range: dataFolderKabkot[a][0]+"!A1:L"+(output.length+1),
-        valueInputOption: 'USER_ENTERED',
-        resource:{'values':output}
-        });
-    await sheets.spreadsheets.values.update({
-        spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
-        range: "recap!F"+(a+2)+":G"+(a+2),
-        valueInputOption: 'USER_ENTERED',
-        resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), 'Sukses']]}
-        });
-}
+
+    await sheets.spreadsheets.values.clear({
+      spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
+      range: "merge!A2:L",
+     }).then(async()=>{
+          var merge=[];
+          console.log('start merge')
+          for(let p=0;p<dataFolderKabkot.length && p<3;p++){
+              console.log('get data from '+dataFolderKabkot[p][0])
+              const dataSheet=await sheets.spreadsheets.values.get({
+                  spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+                  range: dataFolderKabkot[p][0]+"!A2:L",
+              })
+              for(let q=0;q<dataSheet.data.values.length;q++){
+                  merge.push(dataSheet.data.values[q])
+              }
+          }
+          
+          await sheets.spreadsheets.values.update({
+              spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
+              range: "merge!A2:L"+merge.length+2,
+              valueInputOption: 'USER_ENTERED',
+              resource:{'values':merge}
+              });
+          await sheets.spreadsheets.values.update({
+            spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
+            range: "metadata!B2:B2",
+            valueInputOption: 'USER_ENTERED',
+            resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')]]}
+            });
+          console.log('finish merge');
+     });
       
   } catch (err) {
     // TODO(developer) - Handle error

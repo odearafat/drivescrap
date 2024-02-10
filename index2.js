@@ -1,12 +1,14 @@
 const fs = require('fs').promises;
 const path = require('path');
+var cron = require('node-cron');
 const process = require('process');
 const {authenticate} = require('@google-cloud/local-auth');
 const {google} = require('googleapis');
 const { constants } = require('fs');
 
+
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly', 'https://www.googleapis.com/auth/spreadsheets'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -138,162 +140,158 @@ async function getFileDetail(idFile, drive){
 }
 
 function getFileInfo(files, kdKab, path, level1, level2, nmKabKota ){
-    
-    return [kdKab, 'file', files.name, path,level1, level2, files.downloadUrl, files.dateCreated,
-    files.size, files.owner.name, nmKabKota, '['+kdKab+']'+' '+nmKabKota]
+    //console.log(files);
+    return [kdKab, 'file', files.name, path,level1, level2, files.webViewLink, files.createdTime.substring(0, 10),
+    files.size, files.owners[0].displayName, nmKabKota, '['+kdKab+']'+' '+nmKabKota]
   }
   
   function getFolderInfo(folder, kdKab, path, level1, level2, nmKabKota ){
-    //console.log(folder);
-    return [kdKab, 'folder', folder.name, path, level1, level2,folder.webViewLink, folder.createdTime,
+    //console.log(folder.createdTime.substring(0, 10));
+    return [kdKab, 'folder', folder.name, path, level1, level2,folder.webViewLink, folder.createdTime.substring(0, 10),
     '', folder.owners[0].displayName, nmKabKota, '['+kdKab+']'+' '+nmKabKota]
     
   }
   
 
 
+
+  
 async function listFiles(authClient) {
 const drive = google.drive({version: 'v3', auth: authClient});
-const output=[['kode_kabkot',	'jenis',	'nama_file',	'path','level1', 'level2',	'link',	'date_created',	'size',	'owner', 'nama_kabkot', 'kode_nama_kabkot']]
-let numFolder=0;
+const sheets = google.sheets({version: 'v4', auth:authClient});
+console.log('masuk');
+
   const files = [];
  
   try {
-    //dataFolderKabkot.map
-//for( let a=0;a<1; a++){
-    console.log('crawl data '+dataFolderKabkot[1][0]+' - '+dataFolderKabkot[1][2]+' . . . ')
-    const nmKabKota=dataFolderKabkot[1][2];
-    const kdKab=dataFolderKabkot[1][0];
-    
-    const folderRoot = await getFolders(dataFolderKabkot[1][1], drive)
-    .then((a)=>{
-        const folders=a.folders;
-        folders.map( folderaa =>{
-            console.log(folderaa.name)
-            const level1=folderaa.name;
-            getFolders(folderaa.id, drive)
-            .then((b)=>{
-                const foldersb=b.folders;
-                foldersb.map(folderbb=>{
-                    const level2=folderbb.name;
-                    console.log(folderaa.name+' >> '+folderbb.name);
-                    output.push(  getFolderInfo(folderbb, kdKab, level1, level1, level2, nmKabKota ));
-                    numFolder++;
-                    getFolders(folderbb.id, drive)
-                    .then((c)=>{
-                        const foldersc=c.folders;
-                        foldersc.map(foldercc=>{
-                            console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name);
-                            output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2, level1, level2, nmKabKota ));
-                            numFolder++;
-                            getFolders(foldercc.id, drive)
-                            .then((d)=>{
-                                const foldersd=d.folders;
-                                foldersd.map(folderdd=>{
-                                    console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name+' >> '+folderdd.name);
-                                    output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2+' >> '+foldercc.name, level1, level2, nmKabKota ));
-                                    numFolder++;
-                                    getFolders(folderdd.id, drive)
-                                    .then((e)=>{
-                                        const folderse=e.folders;
-                                        folderse.map(folderee=>{
-                                            //console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name);
-                                            output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2+' >> '+foldercc.name+' >> '+folderdd.name, level1, level2, nmKabKota ));
-                                            console.log(output);
-                                            numFolder++;
-                                            getFolders(folderee.id, drive)
-                                            .then((f)=>{
-                                                const foldersf=f.folders;
-                                                const filesf=f.files;
-                                                filesf.map(filesff=>{
-                                                    console.log('--- file g--- '+filesff.name);
-                                                })
-                                                foldersf.map(folderff=>{
-                                                    //console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name);
-                                                    output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name, level1, level2, nmKabKota ));
-                                                    numFolder++;
-                                                    getFolders(folderff.id, drive)
-                                                    .then((g)=>{
-                                                        const foldersg=g.folders;
-                                                        const filesg=g.files;
-                                                        filesg.map(filesgg=>{
-                                                            console.log('--- file g--- '+filesgg.name);
-                                                        })
-                                                        foldersg.map(foldergg=>{
-                                                            //console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name+' >> '+foldergg.name);
-                                                            output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name, level1, level2, nmKabKota ));
-                                                            numFolder++;
-                                                            console.log('jumlah folder='+numFolder);
-                                                            getFolders(foldergg.id, drive)
-                                                            .then((h)=>{
-                                                                const foldersh=h.folders;
-                                                                const filesh=h.files;
-                                                                filesh.map(fileshh=>{
-                                                                    console.log('--- file h--- '+fileshh.name);
+        //dataFolderKabkot.map
+        for( let a=0;a<dataFolderKabkot.length; a++){
+            const output=[['kode_kabkot',	'jenis',	'nama_file',	'path','level1', 'level2',	'link',	'date_created',	'size',	'owner', 'nama_kabkot', 'kode_nama_kabkot']]
+            let numFolder=0;
+
+            await sheets.spreadsheets.values.update({
+                spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+                range: "recap!E"+(a+2)+":G"+(a+2),
+                valueInputOption: 'USER_ENTERED',
+                resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), '', 'Gagal' ]]}
+                });
+
+            console.log('crawl data '+dataFolderKabkot[a][0]+' - '+dataFolderKabkot[a][2]+' . . . ')
+            const nmKabKota=dataFolderKabkot[a][2];
+            const kdKab=dataFolderKabkot[a][0];
+            
+            const folderRoot = await getFolders(dataFolderKabkot[a][1], drive);
+            //console.log(folderRoot);
+            
+            for (let item of folderRoot.folders) {
+                console.log(item.name);
+                await getFolders(item.id,drive).then( async (response)=>{
+                    for(let item2 of response.folders){
+                        await getFolders(item2.id,drive).then(async(response)=>{
+                            console.log(item2.name);
+                            output.push(  getFolderInfo(item2, kdKab, item.name, item.name, item2.name, nmKabKota ));
+                            for(let files2 of response.files){
+                                output.push( getFileInfo(files2, kdKab, item.name+' >> '+item2.name, item.name, item2.name, nmKabKota ));
+                            }
+                            for(let item3 of response.folders){
+                                await getFolders(item3.id,drive).then(async (response)=>{
+                                    //console.log(item3.name);
+                                    output.push( getFolderInfo(item3, kdKab, item.name+' >> '+item2.name, item.name, item2.name, nmKabKota ));
+                                    for(let files3 of response.files){
+                                        output.push( getFileInfo(files3, kdKab, item.name+' >> '+item2.name+' >> '+item3.name, item.name, item2.name, nmKabKota ));
+                                    }
+                                    for(let item4 of response.folders){
+                                        await getFolders(item4.id,drive).then(async (response)=>{
+                                            //console.log(item4.name);
+                                            output.push( getFolderInfo(item4, kdKab,  item.name+' >> '+item2.name+' >> '+item3.name, item.name, item2.name, nmKabKota ));
+                                            for(let files4 of response.files){
+                                                output.push( getFileInfo(files4, kdKab,  item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name, item.name, item2.name, nmKabKota ));
+                                            }
+                                            for(let item5 of response.folders){
+                                                await getFolders(item5.id,drive).then(async (response)=>{
+                                                    //console.log(item5.name);
+                                                    output.push( getFolderInfo(item5, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name, item.name, item2.name, nmKabKota ));
+                                                    for(let files5 of response.files){
+                                                        output.push( getFileInfo(files5, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name, item.name, item2.name, nmKabKota ));
+                                                    }
+                                                    for(let item6 of response.folders){
+                                                        await getFolders(item6.id,drive).then(async (response)=>{
+                                                            //console.log(item6.name);
+                                                            output.push( getFolderInfo(item6, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name, item.name, item2.name, nmKabKota ));
+                                                            for(let files6 of response.files){
+                                                                output.push( getFileInfo(files6, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name, item.name, item2.name, nmKabKota ));
+                                                            }
+                                                            for(let item7 of response.folders){
+                                                                await getFolders(item7.id,drive).then(async (response)=>{
+                                                                    //console.log(item7.name);
+                                                                    output.push( getFolderInfo(item7, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name, item.name, item2.name, nmKabKota ));
+                                                                    for(let files7 of response.files){
+                                                                        output.push( getFileInfo(files7, kdKab, item.name+' >> '+item2.name+' >> '+item3.name+' >> '+item4.name+' >> '+item5.name+' >> '+item6.name+' >> '+item7.name, item.name, item2.name, nmKabKota ));
+                                                                    }
                                                                 })
-                                                                foldersh.map(folderhh=>{
-                                                                    //console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name+' >> '+foldergg.name+' >> '+folderhh.name);
-                                                                    output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name+' >> '+foldergg.name, level1, level2, nmKabKota ));numFolder++;
-                                                                    getFolders(folderhh.id, drive)
-                                                                    .then((i)=>{
-                                                                        const foldersi=i.folders;
-                                                                        const filesi=i.files;
-                                                                        filesi.map(filesii=>{
-                                                                            console.log('--- file i--- '+filesii.name);
-                                                                        })
-                                                                        foldersi.map(folderii=>{
-                                                                            //console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name+' >> '+foldergg.name+' >> '+folderhh.name+' >> '+folderii.name);
-                                                                            output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name+' >> '+foldergg.name+' >> '+folderhh.name, level1, level2, nmKabKota ));numFolder++;
-                                                                    
-                                                                            numFolder++;
-                                                                            console.log('masuk i');
-                                                                            getFolders(folderii.id, drive)
-                                                                            .then((j)=>{
-                                                                                const foldersj=j.folders;
-                                                                                const filesj=j.files;
-                                                                                filesj.map(filesjj=>{
-                                                                                    console.log('--- file j--- '+filesjj.name);
-                                                                                })
-                                                                                foldersj.map(folderjj=>{
-                                                                                    //console.log(folderaa.name+' >> '+folderbb.name+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name+' >> '+foldergg.name+' >> '+folderhh.name+' >> '+folderii.name+' >> '+folderjj.name);
-                                                                                    output.push(getFolderInfo(folderbb, kdKab, level1+' >> '+level2+' >> '+foldercc.name+' >> '+folderdd.name+' >> '+folderee.name+' >> '+folderff.name+' >> '+foldergg.name+' >> '+folderhh.name+' >> '+folderii.name, level1, level2, nmKabKota ));numFolder++;
-                                                                                    console.log('masuk j');
-                                                                                    return output;
-                                                                                })
-                                                                            })
-                                                                        })
-                                                                    })
-                                                                })
-                                                            })
-                                                        })
+                                                        }
                                                     })
-                                                })
+                                                }
                                             })
-                                        })
+                                        }
                                     })
-                                })
+                                }
                             })
+                        }
                         })
+                    }
+                    
+                })   
+            }
+            //console.log(output.length);
+            
+            await sheets.spreadsheets.values.update({
+                spreadsheetId: "1yTY0IU2jzXxGcXxaPbVx7CddLmUS58RN7PyzuqTNi1M",
+                range: dataFolderKabkot[a][0]+"!A1:L"+(output.length+1),
+                valueInputOption: 'USER_ENTERED',
+                resource:{'values':output}
+                });
+            await sheets.spreadsheets.values.update({
+                spreadsheetId: "1yTY0IU2jzXxGcXxaPbVx7CddLmUS58RN7PyzuqTNi1M",
+                range: "recap!F"+(a+2)+":G"+(a+2),
+                valueInputOption: 'USER_ENTERED',
+                resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), 'Sukses']]}
+                });
+        }
+
+        await sheets.spreadsheets.values.clear({
+            spreadsheetId: "1SzX43B86kH9HONszsMDzbfTnObp6TCHccC-X9uut6R4",
+            range: "merge!A2:L",
+           }).then(async()=>{
+                var merge=[];
+                for(let p=0;p<dataFolderKabkot.length && p<3;p++){
+                    console.log('get data from '+dataFolderKabkot[p][0])
+                    const dataSheet=await sheets.spreadsheets.values.get({
+                        spreadsheetId: "1yTY0IU2jzXxGcXxaPbVx7CddLmUS58RN7PyzuqTNi1M",
+                        range: dataFolderKabkot[p][0]+"!A2:L",
                     })
-                })
-            })
-        })
+                    for(let q=0;q<dataSheet.data.values.length;q++){
+                        merge.push(dataSheet.data.values[q])
+                    }
+                }
+                
+                console.log('pass');
+                //console.log(merge);
+                await sheets.spreadsheets.values.update({
+                    spreadsheetId: "1SzX43B86kH9HONszsMDzbfTnObp6TCHccC-X9uut6R4",
+                    range: "merge!A2:L"+merge.length+2,
+                    valueInputOption: 'USER_ENTERED',
+                    resource:{'values':merge}
+                    });
+                
+           });
+
         
-    })
-
-    
-  } catch (err) {
-    // TODO(developer) - Handle error
-    throw err;
-  }
-
-  
-  
-
+      
+    } catch (err) {
+        // TODO(developer) - Handle error
+        throw err;
+    }
 }
 
-authorize().
-then(listFiles
-    //console.log(listFiles);
-
-).catch(console.error);
+  authorize().then(listFiles).catch(console.error)
