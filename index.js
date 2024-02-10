@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+var cron = require('node-cron');
 const process = require('process');
 const {authenticate} = require('@google-cloud/local-auth');
 const {google} = require('googleapis');
@@ -153,14 +154,16 @@ function getFileInfo(files, kdKab, path, level1, level2, nmKabKota ){
   
 
 
+
+  
 async function listFiles(authClient) {
 const drive = google.drive({version: 'v3', auth: authClient});
 const sheets = google.sheets({version: 'v4', auth:authClient});
-
+console.log('masuk');
   const files = [];
  
   try {
-    //dataFolderKabkot.map
+        //dataFolderKabkot.map
 for( let a=0;a<dataFolderKabkot.length; a++){
     const output=[['kode_kabkot',	'jenis',	'nama_file',	'path','level1', 'level2',	'link',	'date_created',	'size',	'owner', 'nama_kabkot', 'kode_nama_kabkot']]
     let numFolder=0;
@@ -256,13 +259,12 @@ for( let a=0;a<dataFolderKabkot.length; a++){
         });
 }
       
-  
-    
   } catch (err) {
     // TODO(developer) - Handle error
     throw err;
   }
 }
 
-authorize().
-then(listFiles).catch(console.error);
+cron.schedule('00 16 * * *',() => {
+  authorize().then(listFiles).catch(console.error)
+});
