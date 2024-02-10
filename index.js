@@ -265,7 +265,7 @@ console.log('masuk');
      }).then(async()=>{
           var merge=[];
           console.log('start merge')
-          for(let p=0;p<dataFolderKabkot.length && p<3;p++){
+          for(let p=0;p<dataFolderKabkot.length;p++){
               console.log('get data from '+dataFolderKabkot[p][0])
               const dataSheet=await sheets.spreadsheets.values.get({
                   spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
@@ -297,6 +297,6 @@ console.log('masuk');
   }
 }
 
-cron.schedule('00 16 * * *',() => {
+cron.schedule('00 00,8,12,16 * * *',() => {
   authorize().then(listFiles).catch(console.error)
 });
