@@ -73,44 +73,8 @@ async function authorize() {
  */
 
 const dataFolderKabkot=[ 
-    [ '3501', '1Qi20QZzResOy7QTL3aCFk35xmqxb4KjG','Kabupaten Pacitan' ],
-    [ '3502', '1a_j7PhHrNFo53-hpzd2eZqRpHLgmBK2j','Kabupaten Ponorogo'  ],
-    [ '3503', '1huIm8LcSgRBMrRx4lcwoH4rICVhjgy4p','Kabupaten Trenggalek'],            
-    [ '3504', '1YcBM3dZROZB6PlbD_WLLP3v_0zs0g9EN','Kabupaten Tulungagung'],
-    [ '3505', '1Dnqz0NNNmCLtVSjcfZ8ASmVbrljWEliw','Kabupaten Blitar' ],
-    [ '3506', '1_iL-wdl37owV6WjB8JAsHswQ9IOPyIAQ','Kabupaten Kediri'],
-    [ '3507', '1yFKsGcWH3lpYXLhxvJ18TdaJVGiz0pF6','Kabupaten Malang'],
-    [ '3508', '137SYPrp6wZxxp2UjGGuz4Mq5LbMF4mXQ','Kabupaten Lumajang' ],
-    [ '3509', '1oEEY6nF_oSQBibPwrLxgBsurWH3fuXcJ','Kabupaten Jember' ],
-    [ '3510', '1uXgSgMnND3waAN4fGNl9-fW4m95qEAuZ','Kabupaten Banyuwangi' ],
-    [ '3511', '1DqfzubkQxkhP4p5GqnzKVCgnKk-nwjgT','Kabupaten Bondowoso' ],
-    [ '3512', '1odHay_UZZjYLUi4zUPD3PbWGhx_qiidQ','Kabupaten Situbondo' ],
-    [ '3513', '1t5bHEggNYqQ15MrWfMG3rp0nVPXMsbBr','Kabupaten Probolinggo' ],
-    [ '3514', '1PM9XnQkkoAC4HVOovAgf3yFSkn1CXu04','Kabupaten Pasuruan' ], 
-    [ '3515', '1G1BsbRlVCtats_x75VOuz0HIZWXviS2J','Kabupaten Sidoarjo' ], //20
-    [ '3516', '1KpqBy6ODKUPjE27I_5UUHVZ2DAgDH5m3','Kabupaten Mojokerto' ], //21
-    [ '3517', '137DHfBK4nydmwQBL8aQ55Im9yTNoEdvK','Kabupaten Jombang' ], //22
-    [ '3518', '18xqm1VELxc7HmwzCfDVtKjQZi-tA1gVz','Kabupaten Nganjuk' ], //23 
-    [ '3519', '1GvspaVc3NhW2aW8_2CeAoIG0aw_nYX2c','Kabupaten Madiun' ], //19
-    [ '3520', '1IFj0agJo0Egd4gt9giycc5a2qV2So7NN','Kabupaten Magetan' ], //24
-    [ '3521', '1C--REbDOmPns8OeB0pExA62ywK5A3c4k','Kabupaten Ngawi' ], //18
-    [ '3522', '1MuhW7__pk-5k7c5cgi2KnZkQ3emrpVE3','Kabupaten Bojonegoro' ], //17
-    [ '3523', '1UYq0dlz_LrOUgkxwTAsFEjfyt2HGusgx','Kabupaten Tuban' ], //16\
-    [ '3524', '1OXdaYoYejYTZX7lk_q3O4e6lnuYvta0K','Kabupaten Lamongan' ], //15
-    [ '3525', '1s_f1gB6cE0byQM-NXBo6HqbMQCT2WV_g','Kabupaten Gresik' ], //2
-    [ '3526', '1waJoszoHi9PaFQA231zP3Cd0nJXl1gPU','Kabupaten Bangkalan' ],//5
-    [ '3527', '1rybn89-xHB7CIS6DFNmsSBpDbMtuK2ww','Kabupaten Sampang' ],//4
-    [ '3528', '1a2iEaN75qcefZ3APYsEiJall52a8eJpH','Kabupaten Pamekasan' ],//3
-    [ '3529', '1yjnEfIfjEycb3cTZFWwiLbT7sekO9Gzy','Kabupaten Sumenep' ], //1
-    [ '3571', '1X94qMEEWuaoflr8GZ_eYe8yTj8JSeZc7','Kota Kediri' ],//13
-    [ '3572', '1JNZ1iMnpUKO79Ftg9MlxsDSpa8DsJU4J','Kota Blitar' ],//14
-    [ '3573', '1JubWmAtTzwO0Ac7miPIFyIDKSCnC3Kjk','Kota Malang' ],//10
-    [ '3574', '1OOZ8expHOVwt-tGa9NcKzp1Jofo7YHBv','Kota Probolinggo' ],//9
-    [ '3575', '1ECnCcF3n1z1nJA6HnqfrOAD3PdQf7tqv','Kota Pasuruan' ],//7
-    [ '3576', '1movCAp2rje-D16ShJxvDrMef98Z6Yl2g','Kota Mojokerto' ],//12
-    [ '3577', '1LBxuYdpD4rq989mCTYNABaJ-EycMepd4','Kota Madiun' ],//11
-    [ '3578', '1Ill00VO-QGkaDs09WNPaQ0Jer4LYRp5R','Kota Surabaya' ],//8
-    [ '3579', '16Myuw1CPikhSLRJ9SrBBo602ZuyTyYAw','Kota Batu' ] //6
+    [ '3572', '1Hoge7rS9zLDweFFenlXNPILysOHDRaA7','Kota Blitar' ]
+   
   ]
 
 
@@ -297,6 +261,5 @@ console.log('masuk');
   }
 }
 
-cron.schedule('00 00,08,12,17 * * *',() => {
-  authorize().then(listFiles).catch(console.error)
-});
+
+ authorize().then(listFiles).catch(console.error)
