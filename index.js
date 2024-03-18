@@ -103,7 +103,7 @@ const dataFolderKabkot=[
     [ '3528', '1a2iEaN75qcefZ3APYsEiJall52a8eJpH','Kabupaten Pamekasan' ],//3
     [ '3529', '1yjnEfIfjEycb3cTZFWwiLbT7sekO9Gzy','Kabupaten Sumenep' ], //1
     [ '3571', '1X94qMEEWuaoflr8GZ_eYe8yTj8JSeZc7','Kota Kediri' ],//13
-    [ '3572', '1JNZ1iMnpUKO79Ftg9MlxsDSpa8DsJU4J','Kota Blitar' ],//14
+    [ '3572', '1Hoge7rS9zLDweFFenlXNPILysOHDRaA7','Kota Blitar' ],//14
     [ '3573', '1JubWmAtTzwO0Ac7miPIFyIDKSCnC3Kjk','Kota Malang' ],//10
     [ '3574', '1OOZ8expHOVwt-tGa9NcKzp1Jofo7YHBv','Kota Probolinggo' ],//9
     [ '3575', '1ECnCcF3n1z1nJA6HnqfrOAD3PdQf7tqv','Kota Pasuruan' ],//7
@@ -297,6 +297,6 @@ console.log('masuk');
   }
 }
 
-cron.schedule('00 00,08,12,17 * * *',() => {
+cron.schedule('09 11,08,12,17 * * *',() => {
   authorize().then(listFiles).catch(console.error)
 });
