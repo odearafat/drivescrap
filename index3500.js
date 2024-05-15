@@ -73,7 +73,7 @@ async function authorize() {
  */
 
 const dataFolderKabkot=[ 
-    [ '3572', '1Hoge7rS9zLDweFFenlXNPILysOHDRaA7','Kota Blitar' ]
+    [ '3500', '1nbOhFm5M8XtOSt_qIT3MHLoSV7Z605Pj','Provinsi Jawa Timur' ]
    
   ]
 
@@ -132,12 +132,12 @@ console.log('masuk');
         const output=[['kode_kabkot',	'jenis',	'nama_file',	'path','level1', 'level2',	'link',	'date_created',	'size',	'owner', 'nama_kabkot', 'kode_nama_kabkot']]
         let numFolder=0;
 
-        await sheets.spreadsheets.values.update({
-            spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
-            range: "recap!E"+(a+2)+":G"+(a+2),
-            valueInputOption: 'USER_ENTERED',
-            resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), '', 'Gagal' ]]}
-            });
+        // await sheets.spreadsheets.values.update({
+        //     spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+        //     range: "recap!E"+(a+2)+":G"+(a+2),
+        //     valueInputOption: 'USER_ENTERED',
+        //     resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), '', 'Gagal' ]]}
+        //     });
 
         console.log('crawl data '+dataFolderKabkot[a][0]+' - '+dataFolderKabkot[a][2]+' . . . ')
         const nmKabKota=dataFolderKabkot[a][2];
@@ -210,50 +210,50 @@ console.log('masuk');
         
       
         const result = await sheets.spreadsheets.values.update({
-            spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+            spreadsheetId: "1qX_VliqWsVl03PA7f5_MhBVspKaigYcL3ZWLOxT1Zqc",
             range: dataFolderKabkot[a][0]+"!A1:L"+(output.length+1),
             valueInputOption: 'USER_ENTERED',
             resource:{'values':output}
             });
-        await sheets.spreadsheets.values.update({
-            spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
-            range: "recap!F"+(a+2)+":G"+(a+2),
-            valueInputOption: 'USER_ENTERED',
-            resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), 'Sukses']]}
-            });
+        // await sheets.spreadsheets.values.update({
+        //     spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+        //     range: "recap!F"+(a+2)+":G"+(a+2),
+        //     valueInputOption: 'USER_ENTERED',
+        //     resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''), 'Sukses']]}
+        //     });
     }
 
-    await sheets.spreadsheets.values.clear({
-      spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
-      range: "merge!A2:L",
-     }).then(async()=>{
-          var merge=[];
-          console.log('start merge')
-          for(let p=0;p<dataFolderKabkot.length;p++){
-              console.log('get data from '+dataFolderKabkot[p][0])
-              const dataSheet=await sheets.spreadsheets.values.get({
-                  spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
-                  range: dataFolderKabkot[p][0]+"!A2:L",
-              })
-              for(let q=0;q<dataSheet.data.values.length;q++){
-                  merge.push(dataSheet.data.values[q])
-              }
-          }
+    // await sheets.spreadsheets.values.clear({
+    //   spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
+    //   range: "merge!A2:L",
+    //  }).then(async()=>{
+    //       var merge=[];
+    //       console.log('start merge')
+    //       for(let p=0;p<dataFolderKabkot.length;p++){
+    //           console.log('get data from '+dataFolderKabkot[p][0])
+    //           const dataSheet=await sheets.spreadsheets.values.get({
+    //               spreadsheetId: "1BK_zTK30TFM5mdzHwYISi7vTTTh9Eli1ENZNJg5fn6k",
+    //               range: dataFolderKabkot[p][0]+"!A2:L",
+    //           })
+    //           for(let q=0;q<dataSheet.data.values.length;q++){
+    //               merge.push(dataSheet.data.values[q])
+    //           }
+    //       }
           
-          await sheets.spreadsheets.values.update({
-              spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
-              range: "merge!A2:L"+merge.length+2,
-              valueInputOption: 'USER_ENTERED',
-              resource:{'values':merge}
-              });
-          await sheets.spreadsheets.values.update({
-            spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
-            range: "metadata!B2:B2",
-            valueInputOption: 'USER_ENTERED',
-            resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')]]}
-            });
-          console.log('finish merge');
-     });
+    //       await sheets.spreadsheets.values.update({
+    //           spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
+    //           range: "merge!A2:L"+merge.length+2,
+    //           valueInputOption: 'USER_ENTERED',
+    //           resource:{'values':merge}
+    //           });
+    //       await sheets.spreadsheets.values.update({
+    //         spreadsheetId: "113KE3jCLZC5mMujnoW5Dm0P0L1Wf0h6krGwblXBZuDw",
+    //         range: "metadata!B2:B2",
+    //         valueInputOption: 'USER_ENTERED',
+    //         resource:{'values':[[new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')]]}
+    //         });
+    //       console.log('finish merge');
+    //  });
       
   } catch (err) {
     // TODO(developer) - Handle error

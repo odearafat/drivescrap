@@ -297,6 +297,6 @@ console.log('masuk');
   }
 }
 
-cron.schedule('09 11,08,12,17 * * *',() => {
+cron.schedule('00 00,07,12,17 * * *',() => {
   authorize().then(listFiles).catch(console.error)
 });
